@@ -123,12 +123,12 @@ const transformDom = (dom) => {
 
                     newData = {
                         data: {},
-                        content: {
+                        content: [{
                           //Seems to want text wrapped in some type of content tag (p, h*, etc)
                           data: {},
                           content: content,
                           nodeType: 'paragraph',
-                        },
+                        }],
                         nodeType: htmlAttrs[type][name],
                     };
                     break;
