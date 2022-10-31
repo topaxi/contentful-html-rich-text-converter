@@ -121,16 +121,41 @@ const transformDom = (dom) => {
                     //@TODO shouldn't need to cast to an array...
                     content = R.type(content) === 'Array' ? content : [content];
 
-                    newData = {
-                        data: {},
-                        content: [{
-                          //Seems to want text wrapped in some type of content tag (p, h*, etc)
+                    //Seems to want text wrapped in some type of content tag (p, h*, etc)
+                    // in case we have no paragraphs, we wrap everything in single paragraph
+                    if (content.every(node => node.nodeType !== 'paragraph')) {
+                      newData = {
                           data: {},
-                          content: content,
-                          nodeType: 'paragraph',
-                        }],
-                        nodeType: htmlAttrs[type][name],
-                    };
+                          content: [{
+                            //Seems to want text wrapped in some type of content tag (p, h*, etc)
+                            data: {},
+                            content: content,
+                            nodeType: 'paragraph',
+                          }],
+                          nodeType: htmlAttrs[type][name],
+                      };
+                    } else {
+                      let newContent = [];
+                      // Wrap every text node in a paragraph
+                      content = R.forEach((node)=> {
+                        if (node.nodeType === 'text') {
+                          //if the last of new content isn't a `paragraph`
+                          if (R.propOr(false, 'nodeType', R.last(newContent)) !== 'paragraph') {
+                            newContent = R.concat(newContent, paragraph([], 'paragraph'));
+                          }
+                          //put node in R.last(newContent).content
+                          newContent[newContent.length - 1].content.push(node);
+                        } else {
+                          newContent = R.append(node, newContent);
+                        }
+                      }, content);
+
+                      newData = {
+                          data: {},
+                          content: newContent,
+                          nodeType: htmlAttrs[type][name],
+                      };
+                    }
                     break;
                 case 'p':
                 case 'h1':
