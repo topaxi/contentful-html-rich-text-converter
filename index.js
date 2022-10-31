@@ -122,23 +122,14 @@ const transformDom = (dom) => {
                     content = R.type(content) === 'Array' ? content : [content];
                     let newContent = [];
 
-                    //Seems to want text wrapped in some type of content tag (p, h*, etc)
-                    content = R.forEach((node)=> {
-                        if (node.nodeType === 'text') {
-                            //if the last of new content isn't a `paragraph`
-                            if (R.propOr(false, 'nodeType', R.last(newContent)) !== 'paragraph') {
-                                newContent = R.concat(newContent, paragraph([], 'paragraph'));
-                            }
-                            //put node in R.last(newContent).content
-                            newContent[newContent.length - 1].content.push(node);
-                        } else {
-                            newContent = R.append(node, newContent);
-                        }
-                    }, content);
-
                     newData = {
                         data: {},
-                        content: newContent,
+                        content: {
+                          //Seems to want text wrapped in some type of content tag (p, h*, etc)
+                          data: {},
+                          content: newContent,
+                          nodeType: 'paragraph',
+                        },
                         nodeType: htmlAttrs[type][name],
                     };
                     break;
