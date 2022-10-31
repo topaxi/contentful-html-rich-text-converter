@@ -120,14 +120,13 @@ const transformDom = (dom) => {
                 case 'li':
                     //@TODO shouldn't need to cast to an array...
                     content = R.type(content) === 'Array' ? content : [content];
-                    let newContent = [];
 
                     newData = {
                         data: {},
                         content: {
                           //Seems to want text wrapped in some type of content tag (p, h*, etc)
                           data: {},
-                          content: newContent,
+                          content: content,
                           nodeType: 'paragraph',
                         },
                         nodeType: htmlAttrs[type][name],
