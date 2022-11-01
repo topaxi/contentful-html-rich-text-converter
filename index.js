@@ -25,6 +25,10 @@ const htmlAttrs = {
         u: 'underline',
         img: 'embedded-asset-block',
         span: 'text',
+        table: 'table',
+        tr: 'table-row',
+        th: 'table-header-cell',
+        td: 'table-cell',
     },
     text: 'text',
 };
@@ -52,8 +56,9 @@ const transformDom = (dom) => {
             };
         } else if (type === 'tag') {
             switch(name) {
+                //Spans and tbodx seem to just be passed through
                 case 'span':
-                    //Spans seem to just be passed through
+                case 'tbody':
                     newData = content;
                     break;
                 case 'code':
@@ -164,8 +169,12 @@ const transformDom = (dom) => {
                 case 'h4':
                 case 'h5':
                 case 'h6':
+                case 'table':
+                case 'tr':
+                case 'th':
+                case 'td':
                     newData = paragraph(content, htmlAttrs[type][name])
-                    break
+                    break;
                 default:
                     if (!htmlAttrs[type][name]) {
                         console.log('*** new data needed under -', type, name);
