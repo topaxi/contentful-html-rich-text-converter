@@ -51,7 +51,7 @@ const transformDom = (dom) => {
       newData = {
         data: {},
         marks: [],
-        value: data,
+        value: typeof data === "string" ? data.replace(/&amp;/g, "&") : data,
         nodeType: type,
       };
     } else if (type === "tag") {
